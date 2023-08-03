@@ -110,7 +110,6 @@ export const Flats = () => {
     <Container>
       <FlatsEditDrawer open={openDrawer} onClose={() => setParams({})} />
       <FlatsAddDrawer open={isVisibleDrawer} onClose={setIsVisibleDrawer} />
-
       <Tabs items={items} onClick={handleIsVisibleDrawer} />
     </Container>
   );

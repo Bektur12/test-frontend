@@ -7,7 +7,4 @@ export const INITIAL_ROUTES = {
   },
 };
 
-export const BASE_URL = "http://localhost:3001";
-
-
-
+export const BASE_URL = "http://3.73.158.171:3001";
