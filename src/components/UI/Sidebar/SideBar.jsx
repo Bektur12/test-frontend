@@ -48,7 +48,9 @@ const AntSider = styled(Sider)`
     background-color: #ffffff;
     border: 1px solid #ffffff;
     box-shadow: 0px 4px 20px 0px #0000000d;
-    height: 100%;
+    height: 100vh;
+    width: 190px;
+    position: fixed;
     padding-top: 50px;
   }
   & .ant-menu-item-selected {
