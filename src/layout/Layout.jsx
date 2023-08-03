@@ -11,11 +11,9 @@ export const Layout = () => {
   return (
     <Container>
       <SideBar />
-      <div>
+      <div className="content">
         <Header />
-        <Content>
-          <Outlet />
-        </Content>
+        <Outlet />
       </div>
     </Container>
   );
@@ -23,6 +21,9 @@ export const Layout = () => {
 
 const Container = styled("div")`
   display: flex;
-  height: 100vh;
+  height: 100%;
   width: 100%;
+  .content {
+    width: 100%;
+  }
 `;

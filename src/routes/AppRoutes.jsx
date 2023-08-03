@@ -17,7 +17,7 @@ function AppRoutes() {
         path={INITIAL_ROUTES.INITIAL.PATH}
         element={
           <ProtectedRoute
-            Component={<Navigate replace to="/signin" />}
+            children={<Navigate replace to="/signin" />}
             isAllowed={!jwt}
             fallbackPath="/signin"
           />
@@ -27,9 +27,19 @@ function AppRoutes() {
         path="/signin"
         element={
           <ProtectedRoute
-            Component={<SignIn />}
+            children={<SignIn />}
             isAllowed={!jwt}
             fallbackPath="/user"
+          />
+        }
+      />
+      <Route
+        path="/user"
+        element={
+          <ProtectedRoute
+            children={<Navigate replace to="/signin" />}
+            isAllowed={!jwt}
+            fallbackPath="/signin"
           />
         }
       />

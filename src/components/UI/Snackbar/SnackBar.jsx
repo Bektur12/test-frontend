@@ -15,11 +15,12 @@ const Toastify = styled(ToastContainer)(() => ({
   "& .Toastify__toast--error": {
     background: "#fff1f0",
     border: "1px solid #fb9998",
-    padding: "8px 16px",
+    padding: "0px 4px",
 
     "& .Toastify__close-button": {
       path: {
         fill: "#828282",
+        marginTop: "5px",
       },
     },
 

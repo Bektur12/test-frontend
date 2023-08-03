@@ -18,11 +18,7 @@ function App() {
     autoLogin();
   }, []);
 
-  return (
-    <div>
-      <AppRoutes />
-    </div>
-  );
+  return <AppRoutes />;
 }
 
 export default App;

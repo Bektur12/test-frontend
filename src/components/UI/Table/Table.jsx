@@ -14,66 +14,75 @@ export const Table = ({ columns = [], data = [] }) => {
     );
 
   return (
-    <>
-      <StyledTable {...getTableProps()}>
-        <thead>
-          {headerGroups?.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <TH {...column.getHeaderProps()}>{column.render("Header")}</TH>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page?.map((row) => {
-            prepareRow(row);
-            return (
-              <React.Fragment key={Math.random()}>
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return (
-                      <TD {...cell.getCellProps()}>{cell.render("Cell")}</TD>
-                    );
-                  })}
-                </tr>
-              </React.Fragment>
-            );
-          })}
-        </tbody>
-      </StyledTable>
-    </>
+    <StyledTable {...getTableProps()}>
+      <thead>
+        {headerGroups?.map((headerGroup) => (
+          <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column) => (
+              <TH {...column.getHeaderProps()}>{column.render("Header")}</TH>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody {...getTableBodyProps()}>
+        {page?.map((row) => {
+          prepareRow(row);
+          return (
+            <React.Fragment key={Math.random()}>
+              <tr {...row.getRowProps()}>
+                {row.cells.map((cell) => {
+                  return (
+                    <TD {...cell.getCellProps()}>{cell.render("Cell")}</TD>
+                  );
+                })}
+              </tr>
+            </React.Fragment>
+          );
+        })}
+      </tbody>
+    </StyledTable>
   );
 };
 
 const StyledTable = styled("table")`
   border-collapse: collapse;
-  table-layout: fixed;
   width: 100%;
-  border-spacing: 0 5px;
+  border-spacing: 0;
+  font-family: Arial, sans-serif;
 
+  & thead th {
+    text-align: start;
+  }
   & th {
-    background-color: #ececec;
-    color: 001737;
+    background-color: #f2f2f2;
+    color: #001737;
+    padding: 12px 16px;
     text-transform: capitalize;
+    font-weight: bold;
+    border-bottom: 2px solid #001737;
+    vertical-align: middle;
   }
 
-  & thead {
-    border-spacing: 0 14px;
-  }
-  & thead::after {
-    content: "";
-    display: table-row;
-    height: 14px;
-  }
   & tr {
-    border: 1px solid black;
+    border: 1px solid #d8d8d8;
   }
-  tbody {
-    tr {
-      margin-bottom: 10px;
-      width: 100%;
-    }
+
+  & td {
+    padding: 12px 16px;
+    vertical-align: middle;
+  }
+
+  & tbody tr {
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  & tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  & tbody tr:hover {
+    background-color: #f0f0f0;
   }
 `;
 

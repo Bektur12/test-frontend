@@ -23,8 +23,8 @@ export const CustomStatus = ({ status }) => {
 
 const StatusWrapper = styled("div")`
   background: ${(p) => p.status};
-  width: 64px;
-  height: 26px;
   border-radius: 5px;
-  text-align: center;
+  padding: 6px 0px 6px 0px;
+  display: flex;
+  justify-content: center;
 `;

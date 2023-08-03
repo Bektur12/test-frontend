@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { CustomStatus } from "../UI/CustomStatus";
-import { Button } from "antd";
 import { Table } from "../UI/Table/Table";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +8,8 @@ import { styled } from "styled-components";
 import { FlatsAddDrawer } from "./FlatsAddDrawer";
 import { FlatsEditDrawer } from "./FlatsEditDrawer";
 import { Menu } from "../UI/Menu/Menu";
+import { Button } from "../UI/Button/Button";
+import { Tabs } from "../UI/Tabs/Tabs";
 
 export const Flats = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export const Flats = () => {
       value: "История",
     },
   ];
+
   const columns = [
     {
       id: "clientNumber",
@@ -63,9 +65,8 @@ export const Flats = () => {
 
   const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
 
-  const handleEdit = (id) => {
-    setParams({ id, isVisible: true });
-  };
+  const handleEdit = (id) => setParams({ id, isVisible: true });
+
   const { flats } = useSelector((state) => state.flats);
 
   useEffect(() => {
@@ -78,15 +79,39 @@ export const Flats = () => {
 
   const openDrawer = params.get("isVisible");
 
+  const items = [
+    {
+      label: "Все",
+      key: "1",
+      children: `Content of Tab Pane ${"d"}`,
+    },
+    {
+      label: "Prime City",
+      key: "2",
+      children: <Table columns={columns} data={flats} />,
+    },
+    {
+      label: "Kochmon City",
+      key: "3",
+      children: `Content of Tab Pane ${"d"}`,
+    },
+    {
+      label: "Baytik",
+      key: "4",
+      children: `Content of Tab Pane ${"d"}`,
+    },
+    {
+      label: "Prime City",
+      key: "5",
+      children: `Content of Tab Pane ${"d"}`,
+    },
+  ];
   return (
     <Container>
       <FlatsEditDrawer open={openDrawer} onClose={() => setParams({})} />
-
       <FlatsAddDrawer open={isVisibleDrawer} onClose={setIsVisibleDrawer} />
-      <TopPart>
-        <Button onClick={handleIsVisibleDrawer}>Добавить</Button>
-      </TopPart>
-      <Table columns={columns} data={flats} />
+
+      <Tabs items={items} onClick={handleIsVisibleDrawer} />
     </Container>
   );
 };
@@ -96,15 +121,12 @@ const ButtonContainer = styled("div")`
   align-items: center;
   gap: 30px;
 `;
-const TopPart = styled("div")`
-  display: flex;
-  justify-content: end;
-  margin-top: 20px;
-`;
 
 const Container = styled("div")`
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 20px;
+  width: 100%;
+  height: 100%;
 `;

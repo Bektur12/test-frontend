@@ -32,7 +32,7 @@ const Wrapper = styled("div")`
 
 const StyledTag = styled(Tag)`
   &.ant-tag {
-    background-color: #f5f5f5;
+    background-color: #fcecce;
     width: 74px;
     height: 35px;
     display: flex;

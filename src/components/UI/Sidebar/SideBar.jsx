@@ -51,4 +51,8 @@ const AntSider = styled(Sider)`
     height: 100%;
     padding-top: 50px;
   }
+  & .ant-menu-item-selected {
+    background-color: #bfc4f6;
+    color: #000000;
+  }
 `;

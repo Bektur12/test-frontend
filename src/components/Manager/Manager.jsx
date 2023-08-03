@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "antd";
 import { Table } from "../UI/Table/Table";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +9,8 @@ import { ManagerEditDrawer } from "./ManagerEditDrawer";
 import { deleteManager, getManagers } from "../../store/actions/managers";
 import { Snackbar } from "../UI/Snackbar/SnackBar";
 import { useSnackbar } from "../../hooks/useSnackBar";
+import { Modal } from "../UI/Modal/Modal";
+import { Button } from "../UI/Button/Button";
 
 export const Manager = () => {
   const [params, setParams] = useSearchParams();
@@ -18,13 +19,17 @@ export const Manager = () => {
 
   const dispatch = useDispatch();
 
-  const handleEdit = (id) => {
-    setParams({ id, isVisible: true });
+  const handleEdit = (id) => setParams({ id, isVisible: true });
+
+  const handleIsShowModal = (id) => {
+    setParams({ OPEN_MODAL: true, id });
   };
 
   const options = [
     {
-      onClick: (id) => dispatch(deleteManager({ id, notify })),
+      onClick: (id) => {
+        handleIsShowModal(id);
+      },
       value: "Удалить",
     },
     {
@@ -74,16 +79,29 @@ export const Manager = () => {
     setIsVisibleDrawer((prev) => !prev);
   };
 
-  const openDrawer = params.get("isVisible");
+  const { OPEN_MODAL, id, isVisible } = Object.fromEntries(params);
+
+  const onHandleDeleteClick = () => {
+    dispatch(deleteManager({ id, notify }));
+    setParams({});
+  };
 
   return (
     <Container>
       <Snackbar />
-      <ManagerEditDrawer open={openDrawer} onClose={() => setParams({})} />
+      <Modal
+        open={OPEN_MODAL}
+        title={"Вы действительно хотите удалить менеджера?"}
+        okDelete={onHandleDeleteClick}
+        onClose={setParams}
+      />
+      <ManagerEditDrawer open={isVisible} onClose={() => setParams({})} />
 
       <ManagerAddDrawer open={isVisibleDrawer} onClose={setIsVisibleDrawer} />
       <TopPart>
-        <Button onClick={handleIsVisibleDrawer}>Добавить</Button>
+        <Button backgroundColor="#D1F4D9" onClick={handleIsVisibleDrawer}>
+          Добавить
+        </Button>
       </TopPart>
       <Table columns={columns} data={managers} />
     </Container>

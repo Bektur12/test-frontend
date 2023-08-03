@@ -12,7 +12,7 @@ export const authSlice = createSlice({
       state.jwt = user.jwt;
     },
     logout(state) {
-      state.jwt = { ...initialState.jwt };
+      state.jwt = null;
     },
   },
 });
