@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ReusableDrawer from "../UI/Drawer/Drawer";
 import { styled } from "styled-components";
 import { Button } from "../UI/Button/Button";
@@ -6,87 +6,83 @@ import { Input } from "../UI/Input/Input";
 import { useDispatch } from "react-redux";
 import { postManager } from "../../store/actions/managers";
 import { useSnackbar } from "../../hooks/useSnackBar";
+import { Form } from "antd";
+import { RULES, VALIDATE_TEXT } from "../../utils/consts";
+import { InputNumber } from "../UI/Input/InputNumber";
 
 export const ManagerAddDrawer = ({ onClose, open }) => {
   const dispatch = useDispatch();
 
+  const [form] = Form.useForm();
+
   const { notify } = useSnackbar();
 
-  const [dataInput, setDataInput] = useState({
-    fullName: "",
-    phone: "",
-    email: "",
-    password: "",
-  });
-  const handleClickSendFlats = () => {
-    if (
-      !dataInput.fullName &&
-      !dataInput.phone &&
-      !dataInput.email &&
-      !dataInput.password
-    )
-      return null;
+  const handleClickSendManager = (data) => {
     dispatch(
       postManager({
-        data: { ...dataInput },
-        onCloseDrawer: onClose,
+        data: data,
+        onClose,
         notify,
       })
     );
-    setDataInput({
-      fullName: "",
-      phone: "",
-      email: "",
-      password: "",
-    });
   };
+
   return (
     <ReusableDrawer
       open={open}
       onClose={() => onClose(false)}
       title={"Добавить"}
     >
-      <ContentWrapper>
-        <Input
-          onChange={(e) =>
-            setDataInput({ ...dataInput, fullName: e.target.value })
-          }
-          value={dataInput.fullName}
-          label="ФИО клиента"
-        />
-        <Input
-          label="Номер"
-          onChange={(e) =>
-            setDataInput({ ...dataInput, phone: e.target.value })
-          }
-          value={dataInput.phone}
-        />
-        <Input
-          label="Почта"
-          onChange={(e) =>
-            setDataInput({ ...dataInput, email: e.target.value })
-          }
-          value={dataInput.email}
-        />
-        <Input
-          label="Временный пароль"
-          onChange={(e) =>
-            setDataInput({ ...dataInput, password: e.target.value })
-          }
-          value={dataInput.password}
-        />
+      <ContentWrapper onFinish={handleClickSendManager} form={form}>
+        <Form.Item
+          name="fullName"
+          rules={[{ required: true, message: VALIDATE_TEXT }]}
+        >
+          <Input label="ФИО клиента" />
+        </Form.Item>
 
-        <Button backgroundColor="#5780EB" onClick={handleClickSendFlats}>
+        <Form.Item name="phone" rules={RULES}>
+          <InputNumber label="Номер" />
+        </Form.Item>
+        <Form.Item
+          name="email"
+          rules={[
+            { required: true, message: VALIDATE_TEXT },
+            {
+              type: "email",
+              message: "Please enter a valid email address",
+            },
+          ]}
+        >
+          <Input label="Почта" />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          rules={[
+            { required: true, message: VALIDATE_TEXT },
+            {
+              type: "password",
+              message: "Please enter a valid password",
+            },
+          ]}
+        >
+          <Input label="Временный пароль" />
+        </Form.Item>
+
+        <Button htmlType="submit" backgroundColor="#5780EB">
           Добавить
         </Button>
-        <Button onClick={handleClickSendFlats}>Отмена</Button>
+        <Button>Отмена</Button>
       </ContentWrapper>
     </ReusableDrawer>
   );
 };
 
-const ContentWrapper = styled("div")`
+const ContentWrapper = styled(Form)`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  & .ant-form-item {
+    margin-bottom: 0;
+  }
 `;

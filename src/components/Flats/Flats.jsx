@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { CustomStatus } from "../UI/CustomStatus";
 import { Table } from "../UI/Table/Table";
 import { useSearchParams } from "react-router-dom";
@@ -10,13 +10,19 @@ import { FlatsEditDrawer } from "./FlatsEditDrawer";
 import { Menu } from "../UI/Menu/Menu";
 import { Button } from "../UI/Button/Button";
 import { Tabs } from "../UI/Tabs/Tabs";
+import { useSnackbar } from "../../hooks/useSnackBar";
+import { Snackbar } from "../UI/Snackbar/SnackBar";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 export const Flats = () => {
   const dispatch = useDispatch();
+  const { notify } = useSnackbar();
 
   const options = [
     {
-      onClick: (id) => dispatch(deleteFlat(id)),
+      onClick: (id) => {
+        handleDeleteFlat(id);
+      },
       value: "Удалить",
     },
     {
@@ -28,22 +34,37 @@ export const Flats = () => {
   const columns = [
     {
       id: "clientNumber",
-      Header: "clientNumber",
+      Header: "Номер клиента",
       accessor: "clientNumber",
     },
     {
-      Header: "fullName",
+      id: "2",
+      Header: "Обьект",
+      accessor: "object",
+    },
+    {
+      id: "4",
+      Header: "Этаж",
+      accessor: "floor",
+    },
+    {
+      id: "8",
+      Header: "Цена",
+      accessor: "price",
+    },
+    {
+      Header: "Клиент",
       accessor: "fullName",
       id: "fullName",
     },
     {
-      Header: "contractNumber",
+      Header: "№ квартиры",
       accessor: "contractNumber",
       id: "contractNumber",
     },
 
     {
-      Header: "status",
+      Header: "Статус",
       accessor: (rowData) => rowData.status,
       id: "status",
       Cell: ({ value: status }) => <CustomStatus status={status} />,
@@ -63,27 +84,33 @@ export const Flats = () => {
 
   const [params, setParams] = useSearchParams();
 
-  const [isVisibleDrawer, setIsVisibleDrawer] = useState(false);
+  const { EDIT, OPEN_DRAWER, TABS, status } = Object.fromEntries(params);
 
-  const handleEdit = (id) => setParams({ id, isVisible: true });
+  const handleEdit = (id) => setParams({ id, EDIT: true });
 
   const { flats } = useSelector((state) => state.flats);
 
-  useEffect(() => {
-    dispatch(getFlats());
-  }, []);
-
-  const handleIsVisibleDrawer = () => {
-    setIsVisibleDrawer((prev) => !prev);
+  const handleDeleteFlat = (id) => {
+    dispatch(deleteFlat({ id, notify }))
+      .then(unwrapResult)
+      .then(() => dispatch(getFlats({ title: TABS, status })));
   };
 
-  const openDrawer = params.get("isVisible");
+  useEffect(() => {
+    dispatch(getFlats({ title: TABS, status }));
+  }, [TABS, status]);
+
+  const handleFilteredByTitle = (title) => {
+    setParams({ TABS: title });
+  };
+
+  const handleIsVisibleDrawer = () => setParams({ OPEN_DRAWER: true });
 
   const items = [
     {
       label: "Все",
       key: "1",
-      children: `Content of Tab Pane ${"d"}`,
+      children: <Table columns={columns} data={flats} />,
     },
     {
       label: "Prime City",
@@ -93,24 +120,27 @@ export const Flats = () => {
     {
       label: "Kochmon City",
       key: "3",
-      children: `Content of Tab Pane ${"d"}`,
+      children: <Table columns={columns} data={flats} />,
     },
     {
       label: "Baytik",
       key: "4",
-      children: `Content of Tab Pane ${"d"}`,
-    },
-    {
-      label: "Prime City",
-      key: "5",
-      children: `Content of Tab Pane ${"d"}`,
+      children: <Table columns={columns} data={flats} />,
     },
   ];
+
+  const handleCloseDrawer = () => setParams({});
+
   return (
     <Container>
-      <FlatsEditDrawer open={openDrawer} onClose={() => setParams({})} />
-      <FlatsAddDrawer open={isVisibleDrawer} onClose={setIsVisibleDrawer} />
-      <Tabs items={items} onClick={handleIsVisibleDrawer} />
+      <Snackbar />
+      <FlatsEditDrawer open={EDIT} onClose={handleCloseDrawer} />
+      <FlatsAddDrawer open={OPEN_DRAWER} onClose={handleCloseDrawer} />
+      <Tabs
+        items={items}
+        onClick={handleIsVisibleDrawer}
+        filtered={handleFilteredByTitle}
+      />
     </Container>
   );
 };

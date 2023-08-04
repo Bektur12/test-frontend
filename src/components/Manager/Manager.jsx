@@ -11,6 +11,7 @@ import { Snackbar } from "../UI/Snackbar/SnackBar";
 import { useSnackbar } from "../../hooks/useSnackBar";
 import { Modal } from "../UI/Modal/Modal";
 import { Button } from "../UI/Button/Button";
+import { getFormatDate } from "../../utils/helpers";
 
 export const Manager = () => {
   const [params, setParams] = useSearchParams();
@@ -44,15 +45,21 @@ export const Manager = () => {
       id: "fullName",
     },
     {
-      id: "email",
-      Header: "email",
+      id: "2",
+      Header: "Почта",
       accessor: "email",
     },
 
     {
-      Header: "phone",
+      Header: "Телефон",
       accessor: "phone",
       id: "phone",
+    },
+    {
+      Header: "Дата создания",
+      accessor: "creationDate",
+      id: "4",
+      Cell: ({ value }) => getFormatDate(value),
     },
 
     {

@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Menu as MuiMenu, MenuItem, IconButton } from "@mui/material";
 import Fade from "@mui/material/Fade";
-import { ReactComponent as ControlsIcon } from "../../../assets/icons/controls.svg";
+import { ReactComponent as OpenIcon } from "../../../assets/icons/open.svg";
 
-export const Menu = ({ items, id }) => {
+export const MenuFiltered = ({ items, onClick }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const open = Boolean(anchorEl);
@@ -18,7 +18,7 @@ export const Menu = ({ items, id }) => {
   return (
     <div>
       <IconButton onClick={handleClick} style={{ cursor: "pointer" }}>
-        <ControlsIcon />
+        <OpenIcon />
       </IconButton>
       <MuiMenu
         anchorEl={anchorEl}
@@ -31,8 +31,8 @@ export const Menu = ({ items, id }) => {
             <MenuItem
               key={Math.random()}
               onClick={() => {
-                item.onClick(id);
                 handleClose();
+                onClick(item);
               }}
             >
               {item.value}

@@ -15,7 +15,7 @@ export const authManager = createAsyncThunk(
             jwt: response.data.accessToken,
           })
         );
-        return navigate("/user");
+        return navigate("/");
       }
     } catch (error) {
       notify({

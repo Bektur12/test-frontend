@@ -29,22 +29,21 @@ function AppRoutes() {
           <ProtectedRoute
             children={<SignIn />}
             isAllowed={!jwt}
-            fallbackPath="/user"
+            fallbackPath="/"
           />
         }
       />
       <Route
-        path="/user"
+        path="/"
         element={
           <ProtectedRoute
-            children={<Navigate replace to="/signin" />}
-            isAllowed={!jwt}
+            children={<Layout />}
+            isAllowed={jwt}
             fallbackPath="/signin"
           />
         }
-      />
-      <Route path="/user" element={<Layout />}>
-        <Route element={<Navigate replace to="/user/flats" />} index />
+      >
+        <Route element={<Navigate replace to="/flats" />} index />
         <Route path="flats" element={<Flats />} />
         <Route path="managers" element={<Manager />} />
       </Route>

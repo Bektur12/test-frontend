@@ -1,33 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ReusableDrawer from "../UI/Drawer/Drawer";
-import { Button } from "antd";
+import { Form } from "antd";
 import { styled } from "styled-components";
 import { useDispatch } from "react-redux";
 import { Input } from "../UI/Input/Input";
 import { useSearchParams } from "react-router-dom";
 import { getManagersById, putManager } from "../../store/actions/managers";
+import { RULES, VALIDATE_TEXT } from "../../utils/consts";
+import { Button } from "../UI/Button/Button";
+import { InputNumber } from "../UI/Input/InputNumber";
+import { useSnackbar } from "../../hooks/useSnackBar";
 
 export const ManagerEditDrawer = ({ open, onClose }) => {
+  const { notify } = useSnackbar();
+
   const dispatch = useDispatch();
+
+  const [form] = Form.useForm();
 
   const [params] = useSearchParams();
 
   const id = params.get("id");
 
-  const [dataInput, setDataInput] = useState({
-    fullName: "",
-    phone: "",
-    email: "",
-  });
-
   const getManagersId = (managerId) => {
     dispatch(getManagersById(managerId))
       .unwrap()
       .then((result) => {
-        setDataInput({
+        form.setFieldsValue({
+          email: result.email,
           fullName: result.fullName,
           phone: result.phone,
-          email: result.email,
         });
       });
   };
@@ -36,18 +38,17 @@ export const ManagerEditDrawer = ({ open, onClose }) => {
     getManagersId(id);
   }, [id]);
 
-  const handleClickSendFlats = () => {
-    dispatch(
-      putManager({
-        id: id,
-        data: { ...dataInput },
-        onClose,
-      })
-    );
-    setDataInput({
-      fullName: "",
-      phone: "",
-      email: "",
+  const handleClickUpdateManager = () => {
+    form.validateFields().then((values) => {
+      dispatch(
+        putManager({
+          id: id,
+          data: { ...values },
+          onClose,
+          notify,
+        })
+      );
+      form.resetFields();
     });
   };
 
@@ -55,39 +56,44 @@ export const ManagerEditDrawer = ({ open, onClose }) => {
     <ReusableDrawer
       open={open}
       onClose={onClose}
-      title={"Измененить данные менеджера"}
+      title={"Изменить данные менеджера"}
     >
-      <ContentWrapper>
-        <Input
-          onChange={(e) =>
-            setDataInput({ ...dataInput, fullName: e.target.value })
-          }
-          value={dataInput.fullName}
-          label="ФИО клиента"
-        />
-        <Input
-          label="Номер"
-          onChange={(e) =>
-            setDataInput({ ...dataInput, phone: e.target.value })
-          }
-          value={dataInput.phone}
-        />
-        <Input
-          label="Почта"
-          onChange={(e) =>
-            setDataInput({ ...dataInput, email: e.target.value })
-          }
-          value={dataInput.email}
-        />
-        <Button onClick={handleClickSendFlats}>Сохранить</Button>
+      <ContentWrapper form={form} onFinish={handleClickUpdateManager}>
+        <Form.Item
+          name="fullName"
+          rules={[{ required: true, message: VALIDATE_TEXT }]}
+        >
+          <Input label="ФИО клиента" />
+        </Form.Item>
+        <Form.Item name="phone" rules={RULES}>
+          <InputNumber label="Номер" />
+        </Form.Item>
+        <Form.Item
+          name="email"
+          rules={[
+            { required: true, message: VALIDATE_TEXT },
+            {
+              type: "email",
+              message: "Please enter a valid email address",
+            },
+          ]}
+        >
+          <Input label="Почта" />
+        </Form.Item>
+        <Button backgroundColor="#5780EB" htmlType="submit">
+          Сохранить
+        </Button>
         <Button onClick={() => onClose(false)}>Отмена</Button>
       </ContentWrapper>
     </ReusableDrawer>
   );
 };
 
-const ContentWrapper = styled("div")`
+const ContentWrapper = styled(Form)`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  & .ant-form-item {
+    margin-bottom: 0;
+  }
 `;

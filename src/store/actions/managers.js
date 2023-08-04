@@ -4,11 +4,18 @@ import { BASE_URL } from "../../utils/consts";
 
 export const putManager = createAsyncThunk(
   "managers/putManager",
-  async ({ id, data, onClose }, { dispatch }) => {
+  async ({ id, data, onClose, notify }, { dispatch }) => {
     try {
       const response = await axios.put(`${BASE_URL}/managers/${id}`, data);
       dispatch(getManagers());
-      onClose(false);
+      if (response.status === 200) {
+        notify({
+          type: "success",
+          title: "Updated",
+          message: "Успешно обновлен",
+        });
+        onClose(false);
+      }
       return response.data;
     } catch (error) {
       throw new Error(error.message);
@@ -20,10 +27,16 @@ export const deleteManager = createAsyncThunk(
   "managers/deleteManager",
   async ({ id, notify }, { dispatch }) => {
     try {
-      await axios.delete(`${BASE_URL}/managers/${id}`);
+      const response = await axios.delete(`${BASE_URL}/managers/${id}`);
       dispatch(getManagers());
-      notify({ type: "success", title: "Deleted", message: "Успешно удален" });
-      return id;
+      if (response.status === 200) {
+        notify({
+          type: "success",
+          title: "Deleted",
+          message: "Успешно удален",
+        });
+      }
+      return response.data;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -32,16 +45,19 @@ export const deleteManager = createAsyncThunk(
 
 export const postManager = createAsyncThunk(
   "managers/postManager",
-  async ({ data, onCloseDrawer, notify }, { dispatch }) => {
+  async ({ data, onClose, notify }, { dispatch }) => {
     try {
       const response = await axios.post(`${BASE_URL}/auth/register`, data);
-      notify({
-        type: "success",
-        title: "success",
-        message: "Менеджер успешно добавлен",
-      });
       dispatch(getManagers());
-      onCloseDrawer(false);
+
+      if (response.status === 201) {
+        notify({
+          type: "success",
+          title: "Добавить",
+          message: "Менеджер успешно добавлен",
+        });
+        onClose(false);
+      }
       return response.data;
     } catch (error) {
       throw new Error(error.message);

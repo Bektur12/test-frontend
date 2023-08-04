@@ -7,7 +7,8 @@ const CustomTags = ({ onTagClick }) => {
     onTagClick(tagValue);
   };
 
-  const status = ["Бронь", "Куплено", "Активна"];
+  const status = ["Бронь", "Куплено", "Активна", "Бартер", "Рассрочка"];
+
   return (
     <Wrapper>
       <span>Статус</span>
@@ -45,4 +46,5 @@ const StyledTag = styled(Tag)`
 const InnerWrapper = styled("div")`
   display: flex;
   flex-wrap: wrap;
+  gap: 10px;
 `;

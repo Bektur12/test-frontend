@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { Menu as AntMenu } from "antd";
 import Sider from "antd/es/layout/Sider";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 function getItem(label, key, icon, children) {
   return {
     key,
-    icon,
     children,
     label,
   };
@@ -16,13 +15,14 @@ const items = [getItem("Квартиры", "1"), getItem("Менеджеры", "
 
 const SideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
+
   const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
 
   const handleClick = ({ key }) => {
-    if (key === "2") {
-      navigate("/user/managers");
-    } else if (key === "1") {
-      navigate("/user/flats");
+    if (key === "2" || key === "1") {
+      navigate(key === "2" ? "/managers" : "/flats");
+      setParams({ menuKey: key });
     }
   };
 
@@ -33,7 +33,7 @@ const SideBar = () => {
         onCollapse={(value) => setCollapsed(value)}
       >
         <AntMenu
-          defaultSelectedKeys={["1"]}
+          selectedKeys={[params.get("menuKey")]}
           items={items}
           onClick={handleClick}
         />
@@ -51,7 +51,7 @@ const AntSider = styled(Sider)`
     height: 100vh;
     width: 190px;
     position: fixed;
-    padding-top: 50px;
+    padding-top: 100px;
   }
   & .ant-menu-item-selected {
     background-color: #bfc4f6;

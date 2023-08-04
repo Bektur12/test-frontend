@@ -4,10 +4,17 @@ import { BASE_URL } from "../../utils/consts";
 
 export const putFlat = createAsyncThunk(
   "flats/putFlat",
-  async ({ flatId, flatData }, { dispatch }) => {
+  async ({ flatId, flatData, notify }, { dispatch }) => {
     try {
       const response = await axios.put(`${BASE_URL}/flats/${flatId}`, flatData);
       dispatch(getFlats());
+      if (response.status === 200) {
+        notify({
+          type: "success",
+          title: "Add",
+          message: "Успешно изменен",
+        });
+      }
       return response.data;
     } catch (error) {
       throw new Error(error.message);
@@ -17,11 +24,17 @@ export const putFlat = createAsyncThunk(
 
 export const deleteFlat = createAsyncThunk(
   "flats/deleteFlat",
-  async (flatId, { dispatch }) => {
+  async ({ id, notify }, { dispatch }) => {
     try {
-      await axios.delete(`${BASE_URL}/flats/${flatId}`);
-      dispatch(getFlats());
-      return flatId;
+      const response = await axios.delete(`${BASE_URL}/flats/${id}`);
+      if (response.status === 200) {
+        notify({
+          type: "success",
+          title: "Deleted",
+          message: "Успешно удален",
+        });
+      }
+      return id;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -30,31 +43,45 @@ export const deleteFlat = createAsyncThunk(
 
 export const postFlat = createAsyncThunk(
   "flats/postFlat",
-  async ({ data, onCloseDrawer }, { dispatch }) => {
+  async ({ data, onCloseDrawer, notify }, { dispatch }) => {
     try {
       const response = await axios.post(`${BASE_URL}/flats`, data);
       dispatch(getFlats());
-      onCloseDrawer(false);
+      if (response.status === 201) {
+        notify({
+          type: "success",
+          title: "Добавлен",
+          message: "Успешно добавлен",
+        });
+        onCloseDrawer();
+      }
+
       return response.data;
     } catch (error) {
       throw new Error(error.message);
     }
   }
 );
-export const getFlats = createAsyncThunk("flats/getFlats", async () => {
-  try {
-    const response = await axios.get(`${BASE_URL}/flats`);
-    return response.data;
-  } catch (error) {
-    return error;
+export const getFlats = createAsyncThunk(
+  "flats/getFlats",
+  async ({ title, status }) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/flats/${title || "Все"}/${status || "Все"}`
+      );
+      return response.data;
+    } catch (error) {
+      return error;
+    }
   }
-});
+);
 
 export const getFlatsById = createAsyncThunk(
   "flats/getFlatsById",
-  async (id) => {
+  async (id, { dispatch }) => {
     try {
       const response = await axios.get(`${BASE_URL}/flats/${id}`);
+      dispatch(getFlats());
       return response.data;
     } catch (error) {
       return error;

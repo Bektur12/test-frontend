@@ -26,7 +26,6 @@ export const SignIn = () => {
       <Snackbar />
       <FormWrapper form={form} onFinish={onFinish}>
         <Title>Login</Title>
-
         <Form.Item
           name="email"
           rules={[
@@ -68,7 +67,13 @@ const FormWrapper = styled(Form)`
   grid-template-rows: auto auto auto auto;
   width: 400px;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  & .ant-form-item {
+    margin-bottom: 0;
+  }
+  & .ant-btn {
+    margin-top: 10px;
+  }
 `;
 
 const Title = styled("h1")`
