@@ -7,7 +7,7 @@ export const INITIAL_ROUTES = {
   },
 };
 
-export const BASE_URL = "http://localhost:3001";
+export const BASE_URL = "http://52.58.204.131:3001";
 
 export const VALIDATE_TEXT = "Заполните поле";
 

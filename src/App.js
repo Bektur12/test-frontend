@@ -28,7 +28,12 @@ function App() {
 
   if (location.pathname === "/" && !jwt)
     return <Navigate to="/signin" replace />;
-  return <AppRoutes />;
+
+  return (
+    <div>
+      <AppRoutes />
+    </div>
+  );
 }
 
 export default App;
